@@ -8,12 +8,15 @@ public class TankGame {
 		//Board
 		int height = 500;
 		int width = 500;
-		//Tank size
+		
+		//Tank stats
 		int tankSize = 50;
+		int reloadTime = 5;
+		int lives = 3;
+		
 		//Players
 		int players = 2;
-		//Lives
-		int lives = 3;
+		
 		//Colors
 		ArrayList<Color> colors = new ArrayList<Color>();
 		colors.add(Color.RED);
@@ -21,6 +24,6 @@ public class TankGame {
 		colors.add(Color.GREEN);
 		
 		
-		new GameManager(width, height, players, lives, tankSize, colors);
+		new GameManager(width, height, players, lives, tankSize, reloadTime, colors);
 	}
 }

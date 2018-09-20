@@ -17,13 +17,13 @@ public class DrawObjects extends JPanel{
 		
 		Timer timer = new Timer(50, new ActionListener(){
             public void actionPerformed(ActionEvent e) {
-                for (Tank tank : tanks) {
-                	repaint();
-                }
-                if(bullets != null) {
+            	if(bullets != null) {
                 	for (Bullet bullet : bullets) {
                 		repaint();
                 	}
+                }
+            	for (Tank tank : tanks) {
+                	repaint();
                 }
             }
         });

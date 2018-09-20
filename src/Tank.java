@@ -15,14 +15,15 @@ public class Tank {
 	
 	private int shields;
 	private int reloadLeft;
+	private int reloadTime;
 		
-	public Tank(int startShields, int[] startPos, int size, Color color) {
+	public Tank(int startShields, int[] startPos, int size, int reloadTime, Color color) {
 		pos = startPos;
 		dPos = new int[] {0, 0};
 		lastDPos = new int[] {0, 0};
 		shields = startShields;
 		reloadLeft = 0;
-		
+		this.reloadTime = reloadTime;
 		tSize = size;
 		this.color = color;
 	}
@@ -53,21 +54,23 @@ public class Tank {
 	
 	public void setDx(int dx) {
 		dPos[0] = dx;
-		if(dx != 0) {
-			lastDPos[0] = dx;
-		}
 	}
-	
+		
 	public void setDy(int dy) {
 		dPos[1] = dy;
-		if(dy != 0) {
-			lastDPos[1] = dy;
-		}
 	}
 	
 	public void move() {
 		pos[0] += dPos[0];
 		pos[1] += dPos[1];
+		if(reloadLeft > 0) {
+			reloadLeft -= 1;
+		}
+		if(dPos[0] != 0 || dPos[1] != 0) {
+			lastDPos = dPos.clone();
+			
+		}
+		//System.out.println("ld:" + lastDPos[0] + " " + lastDPos[1]);
 	}
 	
 	public void draw(Graphics g) {
@@ -81,7 +84,8 @@ public class Tank {
 			return null;
 			
 		}
-		return new Bullet(this.pos.clone(), new int[] {dPos[0] * 5, dPos[1] * 5});
+		reloadLeft = reloadTime;
+		return new Bullet(new int[] {pos[0] + (tSize / 2) - 5, pos[1] + (tSize / 2) - 5}, new int[] {lastDPos[0] * 5, lastDPos[1] * 5});
 		
 	}
 	

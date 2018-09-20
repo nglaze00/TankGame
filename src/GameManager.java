@@ -17,14 +17,14 @@ public class GameManager extends JFrame {
 	private ArrayList<Bullet> bullets;
 	private ArrayList<Color> colors;
 	
-	public GameManager(int width, int height, int players, int startLives, int tankSize, ArrayList<Color> colors) {
+	public GameManager(int width, int height, int players, int startLives, int tankSize, int reloadTime, ArrayList<Color> colors) {
 		this.colors = colors;
 
 		tanks = new ArrayList<Tank>();
 		bullets = new ArrayList<Bullet>();
 		
 		for(int i = 0; i < players; i++) {
-			addTank(startLives, randPos(width, height, tankSize), tankSize, colors.get(i));
+			addTank(startLives, randPos(width, height, tankSize), tankSize, reloadTime, colors.get(i));
 		}
 		graphics = new GraphicsManager(width, height, this);
 		play();
@@ -49,8 +49,8 @@ public class GameManager extends JFrame {
 	}
 	
 	
-	public void addTank(int startLives, int[] startPos, int tankSize, Color color) {
-		tanks.add(new Tank(startLives, startPos, tankSize, color));
+	public void addTank(int startLives, int[] startPos, int tankSize, int reloadTime, Color color) {
+		tanks.add(new Tank(startLives, startPos, tankSize, reloadTime, color));
 	}
 	public void addBullet(Bullet bullet) {
 		bullets.add(bullet);
