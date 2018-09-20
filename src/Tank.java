@@ -1,11 +1,12 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
 
-public class Tank {
+public class Tank implements Movable{
 
 	private int[] pos;
 	private int[] dPos;
@@ -35,17 +36,21 @@ public class Tank {
 		return dPos;
 	}
 
-	public int lives() {
+	public int shields() {
 		return shields;
 	}
 	
-	public int tSize() {
+	public int size() {
 		return tSize;
 	}
 
+	public Color color() {
+		return color;
+	}
 	
-	public boolean damageTank() {
+	public boolean damage() {
 		shields -= 1;
+		System.out.println("Tank damaged!");
 		if (shields < 0) {
 			return false;
 		}
@@ -60,17 +65,24 @@ public class Tank {
 		dPos[1] = dy;
 	}
 	
-	public void move() {
+	public void moveX() {
 		pos[0] += dPos[0];
+	}
+	
+	public void moveY() {
 		pos[1] += dPos[1];
-		if(reloadLeft > 0) {
-			reloadLeft -= 1;
-		}
+	}
+	public void setLastPos() {
 		if(dPos[0] != 0 || dPos[1] != 0) {
-			lastDPos = dPos.clone();
-			
+			lastDPos[0] = dPos.clone()[0];
+			lastDPos[1] = dPos.clone()[1];
 		}
-		//System.out.println("ld:" + lastDPos[0] + " " + lastDPos[1]);
+	}
+
+	public void reload() {
+		if(reloadLeft > 0) {
+			reloadLeft--;
+		}
 	}
 	
 	public void draw(Graphics g) {
@@ -89,5 +101,16 @@ public class Tank {
 		
 	}
 	
+	
+	public boolean equals(Tank tank2) {
+		if(this.pos() == tank2.pos()) {
+			return true;
+		}
+		else return false;
+	}
+	
+	public String toString() {
+		return color.toString();
+	}
 	
 }

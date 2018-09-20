@@ -6,13 +6,13 @@ public class TankGame {
 	public static void main(String[] args) {
 		//Game variables
 		//Board
-		int height = 500;
-		int width = 500;
+		int height = 1000;
+		int width = 1000;
 		
 		//Tank stats
 		int tankSize = 50;
 		int reloadTime = 5;
-		int lives = 3;
+		int startShields = 3;
 		
 		//Players
 		int players = 2;
@@ -24,6 +24,13 @@ public class TankGame {
 		colors.add(Color.GREEN);
 		
 		
-		new GameManager(width, height, players, lives, tankSize, reloadTime, colors);
+		GameManager game = new GameManager(width, height, players, startShields, tankSize, reloadTime, colors);
 	}
 }
+
+
+//TODO
+
+//Bot:
+//Add bullet dodging / shooting
+//Prioritize boundary distance > target distance **
