@@ -35,11 +35,15 @@ public class GameManager extends JFrame {
 			try {
 				Thread.sleep(50);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			for(Tank tank : tanks) {
 				tank.move();
+				
+			}
+			for(Bullet bullet : bullets) {
+				bullet.move();
+				
 			}
 		}
 	}
@@ -47,6 +51,9 @@ public class GameManager extends JFrame {
 	
 	public void addTank(int startLives, int[] startPos, int tankSize, Color color) {
 		tanks.add(new Tank(startLives, startPos, tankSize, color));
+	}
+	public void addBullet(Bullet bullet) {
+		bullets.add(bullet);
 	}
 	
 	public ArrayList<Tank> tanks(){

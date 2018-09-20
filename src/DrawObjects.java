@@ -7,29 +7,39 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 
-public class DrawTanks extends JPanel{
+public class DrawObjects extends JPanel{
 	private ArrayList<Tank> tanks;
+	private ArrayList<Bullet> bullets;
 	
-	public DrawTanks(ArrayList<Tank> tanks) {
+	public DrawObjects(ArrayList<Tank> tanks, ArrayList<Bullet> bullets) {
 		this.tanks = tanks;
+		this.bullets = bullets;
 		
 		Timer timer = new Timer(50, new ActionListener(){
             public void actionPerformed(ActionEvent e) {
                 for (Tank tank : tanks) {
                 	repaint();
                 }
+                if(bullets != null) {
+                	for (Bullet bullet : bullets) {
+                		repaint();
+                	}
+                }
             }
         });
         timer.start();
-	}
-	public void updateTanks(ArrayList<Tank> tanks) {
-		this.tanks = tanks;
 	}
 	
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		for (Tank tank : tanks) {
-			tank.drawTank(g);
+			tank.draw(g);
 		}
+		if(bullets != null) {
+			for (Bullet bullet : bullets) {
+				bullet.draw(g);
+			}
+		}
+		
 	}
 }

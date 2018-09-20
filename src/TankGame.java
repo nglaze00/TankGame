@@ -21,6 +21,6 @@ public class TankGame {
 		colors.add(Color.GREEN);
 		
 		
-		GameManager game = new GameManager(width, height, players, lives, tankSize, colors);
+		new GameManager(width, height, players, lives, tankSize, colors);
 	}
 }

@@ -17,29 +17,58 @@ public class GraphicsManager {
 	public GraphicsManager(int width, int height, GameManager game) {
 		frame = new JFrame("Tank War!");
 		container = frame.getContentPane();
-		container.add(new DrawTanks(game.tanks()));
+		container.add(new DrawObjects(game.tanks(), game.bullets()));
 		frame.setSize(width, height);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setBackground(Color.WHITE);
 		
 		frame.addKeyListener(new KeyListener(){
-            @Override
-               public void keyPressed(KeyEvent e) {
-                   if(e.getKeyCode() == KeyEvent.VK_UP){
-                       game.tanks().get(0).setDy(-1);
-                   }
-               }
+			@Override
+            public void keyPressed(KeyEvent e) {
+                int key = e.getKeyCode();
+				if(key == KeyEvent.VK_UP){
+                    game.tanks().get(0).setDy(-5);
+                }
+                if(key == KeyEvent.VK_DOWN){
+                    game.tanks().get(0).setDy(5);
+                }
+                if(key == KeyEvent.VK_LEFT){
+                    game.tanks().get(0).setDx(-5);
+                }
+                if(key == KeyEvent.VK_RIGHT){
+                    game.tanks().get(0).setDx(5);
+                }
+                if(key == KeyEvent.VK_ENTER) {
+                	Bullet bullet = game.tanks().get(0).fireBullet();
+                	if (bullet != null) {
+                		if(bullet.dPos()[0] != 0 || bullet.dPos()[1] != 0) {
+                			bullet.setOwner(0);
+                			game.addBullet(bullet);
+                		}
+                	}
+                }
+            }
 
-               @Override
-               public void keyTyped(KeyEvent e) {
-                   throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-               }
-               @Override
-               public void keyReleased(KeyEvent e) {
-            	   if(e.getKeyCode() == KeyEvent.VK_UP){
-                       game.tanks().get(0).setDy(0);
-                   }               
-               }
+            @Override
+            public void keyTyped(KeyEvent e) {
+                //
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {
+            	int key = e.getKeyCode();
+            	if(key == KeyEvent.VK_UP){
+                    game.tanks().get(0).setDy(0);
+                }
+                if(key == KeyEvent.VK_DOWN){
+                    game.tanks().get(0).setDy(0);
+                }
+                if(key == KeyEvent.VK_LEFT){
+                    game.tanks().get(0).setDx(0);
+                }
+                if(key == KeyEvent.VK_RIGHT){
+                    game.tanks().get(0).setDx(0);
+                }           
+            }
        });
 	frame.setVisible(true);
 
