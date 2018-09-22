@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class TankAI {
 	
@@ -5,7 +7,9 @@ public class TankAI {
 	
 	private Tank control;
 	private double[] controlCenter;
-	double boundaryDistance;
+	
+	private double boundaryDistance;
+	private int closestBoundary;
 	
 	private Tank targetTank;
 	private double[] targetCenter;
@@ -25,12 +29,17 @@ public class TankAI {
 	public void turn() {
 		setTargets();										//Choose tank to focus on
 		setPriority();
-		targetDPos();											//Choose motion direction - chase or run from target
+		System.out.println(priority);
+		if(priority == "tank") {
+			targetDPos();											//Choose motion direction - chase or run from target
+		}
+		else if(priority == "boundary") {
+			boundaryDPos();
+		}
 	}
 	
 	private void setTargets() {
 		setTargetTank();
-		
 		setTargetBullet();
 		
 	}
@@ -50,11 +59,18 @@ public class TankAI {
 		return Math.sqrt(Math.pow(two[0] - one[0], 2) + Math.pow(two[1] - one[1], 2));
 	}
 	private double distanceFromBoundary() {
+		
 		double left = controlCenter[0];
 		double right = game.boardSize()[0] - controlCenter[0];
 		double up = controlCenter[1];
 		double down = game.boardSize()[1] - controlCenter[1];
-		return Math.min(left, Math.min(right, Math.min(up, down)));
+		ArrayList<Double> distances = new ArrayList<Double>();
+		distances.add(left);
+		distances.add(right);
+		distances.add(up);
+		distances.add(down);
+		this.closestBoundary = distances.indexOf(Collections.min(distances));
+		return distances.get(closestBoundary);
 	}
 	
 	private void setTargetTank() {
@@ -89,16 +105,16 @@ public class TankAI {
 	}
 	
 	private void setPriority() {
-		if(targetBullet.willHit(control)) {					//bullet must be on course to hit control
-			priority = "bullet";
-			return;
-		}
+		//if(targetBullet.willHit(control)) {					//bullet must be on course to hit control
+			//priority = "bullet";
+//			return;
+	//	}
 		
-		priority = "target";
+		priority = "tank";
 		priorityDistance = targetDistance;
 		
 		boundaryDistance = distanceFromBoundary();
-		if(boundaryDistance / 2 > targetDistance) {					//boundary must be TWICE as close as target
+		if(boundaryDistance / 2 < targetDistance) {					//boundary must be TWICE as close as target
 			priority = "boundary";
 			priorityDistance = boundaryDistance;
 		}
@@ -117,7 +133,24 @@ public class TankAI {
 		else closeEnough();
 		
 		
-		//BOUNDARIES -- HERE
+	}
+	
+	private void boundaryDPos() {
+		System.out.println(closestBoundary);
+		switch(closestBoundary) {
+			case 0:
+				control.setDx(5);
+				break;
+			case 1:
+				control.setDx(-5);
+				break;
+			case 2:
+				control.setDy(5);
+				break;
+			case 3:
+				control.setDy(-5);
+		}
+		
 	}
 	
 	private void tooClose() {
