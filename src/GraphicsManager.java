@@ -27,16 +27,16 @@ public class GraphicsManager {
             public void keyPressed(KeyEvent e) {
                 int key = e.getKeyCode();
 				if(key == KeyEvent.VK_UP){
-                    game.tanks().get(0).setDy(-5);
+                    game.tanks().get(0).setD(1, -5);
                 }
                 if(key == KeyEvent.VK_DOWN){
-                    game.tanks().get(0).setDy(5);
+                    game.tanks().get(0).setD(1, 5);
                 }
                 if(key == KeyEvent.VK_LEFT){
-                    game.tanks().get(0).setDx(-5);
+                    game.tanks().get(0).setD(0, -5);
                 }
                 if(key == KeyEvent.VK_RIGHT){
-                    game.tanks().get(0).setDx(5);
+                    game.tanks().get(0).setD(0, 5);
                 }
                 if(key == KeyEvent.VK_ENTER) {
                 	Bullet bullet = game.tanks().get(0).fireBullet();
@@ -57,16 +57,16 @@ public class GraphicsManager {
             public void keyReleased(KeyEvent e) {
             	int key = e.getKeyCode();
             	if(key == KeyEvent.VK_UP){
-                    game.tanks().get(0).setDy(0);
+                    game.tanks().get(0).setD(1, 0);
                 }
                 if(key == KeyEvent.VK_DOWN){
-                    game.tanks().get(0).setDy(0);
+                    game.tanks().get(0).setD(1, 0);
                 }
                 if(key == KeyEvent.VK_LEFT){
-                    game.tanks().get(0).setDx(0);
+                    game.tanks().get(0).setD(0, 0);
                 }
                 if(key == KeyEvent.VK_RIGHT){
-                    game.tanks().get(0).setDx(0);
+                    game.tanks().get(0).setD(0, 0);
                 }           
             }
        });

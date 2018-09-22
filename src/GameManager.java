@@ -115,11 +115,8 @@ public class GameManager extends JFrame {
 		int[] movedOjb1 = new int[] {obj1.pos()[0] + obj1.dPos()[0], obj1.pos()[1] + obj1.dPos()[1]};
 		
 
-		boolean xOverlaps = (movedOjb1[0] <= obj2.pos()[0] + obj2.size() && movedOjb1[0] >= obj2.pos()[0]) ||
-				(movedOjb1[0] + obj1.size() <= obj2.pos()[0] + obj2.size() && movedOjb1[0] + obj1.size() >= obj2.pos()[0]);
-
-		boolean yOverlaps = (movedOjb1[1] <= obj2.pos()[1] + obj2.size() && movedOjb1[1] >= obj2.pos()[1]) || 
-				movedOjb1[1] + obj1.size()  <= obj2.pos()[1] + obj2.size() && movedOjb1[1] + obj1.size() >= obj2.pos()[1];
+		boolean xOverlaps = Math.abs(movedOjb1[0] - obj2.pos()[0]) <= obj2.size();		//Assumes same size
+		boolean yOverlaps = Math.abs(movedOjb1[1] - obj2.pos()[1]) <= obj2.size();
 		
 		if(xOverlaps && yOverlaps) {
 			return true;
@@ -131,15 +128,14 @@ public class GameManager extends JFrame {
 	public boolean boundaryOverlapX(Movable obj1) {
 		int movedOjb1X = obj1.pos()[0] + obj1.dPos()[0];
 
-		boolean xOverlaps = movedOjb1X < 0 || movedOjb1X + obj1.size() + 15 > boardSize[0];	//15 & 35 hardcoded to line up with window
-		boolean yOverlaps = movedOjb1X < 0 || movedOjb1X + obj1.size() + 35 > boardSize[1];
+		boolean xOverlaps = movedOjb1X - obj1.size() / 2 < 0 || movedOjb1X + obj1.size() / 2 + 15 > boardSize[0];	//15 & 35 hardcoded to line up with window
 		
 		return xOverlaps;
 	}
 	public boolean boundaryOverlapY(Movable obj1) {
 		int movedOjb1Y = obj1.pos()[1] + obj1.dPos()[1];
 		
-		boolean yOverlaps = movedOjb1Y < 0 || movedOjb1Y + obj1.size() + 35 > boardSize[1];
+		boolean yOverlaps = movedOjb1Y - obj1.size() / 2 < 0 || movedOjb1Y + obj1.size() / 2 + 35 > boardSize[1];
 		
 		return yOverlaps;
 	}

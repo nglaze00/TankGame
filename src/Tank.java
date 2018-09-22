@@ -57,12 +57,8 @@ public class Tank implements Movable{
 		else return true;
 	}
 	
-	public void setDx(int dx) {
-		dPos[0] = dx;
-	}
-		
-	public void setDy(int dy) {
-		dPos[1] = dy;
+	public void setD(int axis, int d) {
+		dPos[axis] = d;
 	}
 	
 	public void moveX() {
@@ -88,7 +84,7 @@ public class Tank implements Movable{
 	public void draw(Graphics g) {
 		
 	    g.setColor(color);  
-	    g.fillRect(pos[0], pos[1], tSize,tSize);
+	    g.fillRect(pos[0] - tSize/2, pos[1] - tSize/2, tSize,tSize);
 	}
 
 	public Bullet fireBullet() {
@@ -97,7 +93,7 @@ public class Tank implements Movable{
 			
 		}
 		reloadLeft = reloadTime;
-		return new Bullet(new int[] {pos[0] + (tSize / 2) - 5, pos[1] + (tSize / 2) - 5}, new int[] {lastDPos[0] * 5, lastDPos[1] * 5});
+		return new Bullet(new int[] {pos[0], pos[1]}, new int[] {lastDPos[0] * 5, lastDPos[1] * 5});
 		
 	}
 	

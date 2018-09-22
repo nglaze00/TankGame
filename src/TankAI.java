@@ -6,180 +6,182 @@ public class TankAI {
 	private GameManager game;
 	
 	private Tank control;
-	private double[] controlCenter;
 	
-	private double boundaryDistance;
-	private int closestBoundary;
+	private double[] boundaryDistances;
 	
-	private Tank targetTank;
-	private double[] targetCenter;
-	private double[] targetRelativePos;
-	private double targetDistance;
+	private ArrayList<Tank> targetTanks;
+	private double[] targetTankRelativePos;
 	
 	private Bullet targetBullet;
+	private double targetBulletDist;
 	
-	private String priority;
-	private double priorityDistance;
+	private String[] priorities;
 	
 	public TankAI(Tank tank, GameManager game) {
 		this.control = tank;
 		this.game = game;
+		targetTanks = new ArrayList<Tank>();
+		boundaryDistances = new double[2];
+		targetTankRelativePos = new double[2];
+		priorities = new String[2];
 	}
 	
 	public void turn() {
+		
 		setTargets();										//Choose tank to focus on
-		setPriority();
-		System.out.println(priority);
-		if(priority == "tank") {
-			targetDPos();											//Choose motion direction - chase or run from target
-		}
-		else if(priority == "boundary") {
-			boundaryDPos();
-		}
+		setPriorities();
+		setDPos(0);
+		setDPos(1);
 	}
 	
 	private void setTargets() {
-		setTargetTank();
+
+		setTargetTanks();
 		setTargetBullet();
 		
 	}
-	
-	private double distanceToTank(Tank tank) {
-		controlCenter = new double[] {(control.pos()[0] + control.size()) / 2, (control.pos()[1] + control.size()) / 2};
-		targetCenter = new double[] {(tank.pos()[0] + tank.size()) / 2, (tank.pos()[1] + tank.size()) / 2};
-		
-		return distance(controlCenter, targetCenter);
+	private void setTargetTanks() {
+		targetTanks.add(0, closestTank(0));
+		targetTanks.add(1, closestTank(1));
 	}
-	private double distance(double[] one, double[] two) {
-		
-		return Math.sqrt(Math.pow(two[0] - one[0], 2) + Math.pow(two[1] - one[1], 2));
-	}
-	private double distance(double[] one, int[] two) {
-		
-		return Math.sqrt(Math.pow(two[0] - one[0], 2) + Math.pow(two[1] - one[1], 2));
-	}
-	private double distanceFromBoundary() {
-		
-		double left = controlCenter[0];
-		double right = game.boardSize()[0] - controlCenter[0];
-		double up = controlCenter[1];
-		double down = game.boardSize()[1] - controlCenter[1];
-		ArrayList<Double> distances = new ArrayList<Double>();
-		distances.add(left);
-		distances.add(right);
-		distances.add(up);
-		distances.add(down);
-		this.closestBoundary = distances.indexOf(Collections.min(distances));
-		return distances.get(closestBoundary);
-	}
-	
-	private void setTargetTank() {
-		int closest = Integer.MAX_VALUE;
+	private Tank closestTank(int axis) {
+		Tank closestTank = game.tanks().get(0);
+		double closestDist = Double.MAX_VALUE;
 		for(Tank tank : game.tanks()) {
 			if(!tank.equals(control)){
-				if(distanceToTank(tank) < closest) {
-					this.targetTank = tank;
-					this.targetDistance = distanceToTank(tank);
+				if(distanceFromTank(tank, axis) < closestDist) {
+					closestTank = tank;
+					closestDist = distanceFromTank(tank, axis);
 				}
 				
 			}
 			
 		}
-		this.targetRelativePos = relativePos(targetTank);
+		this.targetTankRelativePos[axis] = relativePos(closestTank, axis);
+		return closestTank;
+	}
+	
+	private double distance(double one, double two) {
+		
+		return Math.abs(two - one);
+	}
+	private double distanceFromTank(Tank tank, int axis) {
+		
+		return distance(control.pos()[axis], tank.pos()[axis]);
+	}
+	private double distanceFromBullet(Bullet bullet) {
+		
+		return Math.sqrt(Math.pow(distance(control.pos()[0], bullet.pos()[0]), 2) - 
+				distance(control.pos()[1], bullet.pos()[1]));
+	}
+	private void setBoundaryDistances() {
+		
+		double left = -control.pos()[0];
+		double right = game.boardSize()[0] - control.pos()[0];
+		double up = -control.pos()[1];
+		double down = game.boardSize()[1] - control.pos()[1];
+		boundaryDistances[0] = right;
+		if(Math.abs(left) < Math.abs(right)) {
+			boundaryDistances[0] = left;
+		}
+		boundaryDistances[1] = down;
+		if(Math.abs(up) < Math.abs(down)) {
+			boundaryDistances[1] = up;
+		}
 
 	}
+	private double relativePos(Tank tank, int axis) {
+
+		return tank.pos()[axis] - control.pos()[axis];
+	}
+
 	private void setTargetBullet() {
-		double closestDist = Double.MAX_VALUE;
-		for(Bullet bullet : game.bullets()) {
-			double dist = distance(controlCenter, bullet.pos());
-			if(distance(controlCenter, bullet.pos()) < closestDist) {
-				this.targetBullet = bullet;
-				closestDist = dist;
+		if(game.bullets().size() > 0) {
+			targetBullet = game.bullets().get(0);
+			double closestDist = Double.MAX_VALUE;
+			for(Bullet bullet : game.bullets()) {
+				if(!bullet.equals(control)){
+					if(distanceFromBullet(bullet) < closestDist) {
+						targetBullet = bullet;
+					}
+					
+				}
+				
 			}
 		}
 	}
 	
-	private double[] relativePos(Tank tank) {
-
-		return new double[] {targetCenter[0] - controlCenter[0], targetCenter[1] - controlCenter[1]};
-	}
 	
-	private void setPriority() {
+	private void setPriorities() {
 		//if(targetBullet.willHit(control)) {					//bullet must be on course to hit control
-			//priority = "bullet";
-//			return;
+			//priorities = {"bullet", "bullet"};
+			//return;
 	//	}
 		
-		priority = "tank";
-		priorityDistance = targetDistance;
-		
-		boundaryDistance = distanceFromBoundary();
-		if(boundaryDistance / 2 < targetDistance) {					//boundary must be TWICE as close as target
-			priority = "boundary";
-			priorityDistance = boundaryDistance;
+		priorities[0] = "tank";
+		priorities[1] = "tank";
+		setBoundaryDistances();
+		System.out.println(boundaryDistances[0] + " " + boundaryDistances[1] + " " + targetTankRelativePos[0] + " " + targetTankRelativePos[1]);
+		if(Math.abs(boundaryDistances[0]) < 150) {					//boundary must be within 300 units
+			priorities[0] = "boundary";
 		}
-		
-	}
-	
-	private void targetDPos() {
-		//TARGET
-		if(targetDistance < 125) {				//distance at which bot runs
-			tooClose();
+		if(Math.abs(boundaryDistances[1]) < 150) {
+			priorities[1] = "boundary";
+		}
+		System.out.println(priorities[0] + " " + priorities[1]);
 
-		}
-		else if(targetDistance > 150) {			//distance at which bot chases
-			tooFar();
-		}
-		else closeEnough();
-		
 		
 	}
-	
-	private void boundaryDPos() {
-		System.out.println(closestBoundary);
-		switch(closestBoundary) {
-			case 0:
-				control.setDx(5);
+	private void setDPos(int axis) {
+		int other = 1;
+		if(axis == 1) other = 0;
+		switch(priorities[axis]) {
+			case "tank":
+				if(Math.abs(targetTankRelativePos[axis])  < 200) {
+					tooClose(axis);
+					break;
+				}
+				else if(Math.abs(targetTankRelativePos[axis])  > 225) {
+					tooFar(axis);
+					break;
+				}
+				//else closeEnough(axis);
 				break;
-			case 1:
-				control.setDx(-5);
-				break;
-			case 2:
-				control.setDy(5);
-				break;
-			case 3:
-				control.setDy(-5);
+			case "boundary":
+				if(boundaryDistances[axis] < 0) {
+					control.setD(axis, 5);
+				}
+				else control.setD(axis, -5);
+				
+				//if(boundaryDistances[other] < 0)
+				//	control.setD(other, 5);
+				//else control.setD(other, -5);
 		}
-		
 	}
+
 	
-	private void tooClose() {
-		if(targetRelativePos[0] > 0) {
-			control.setDx(-5);
+	
+	private void tooClose(int axis) {
+	
+		if(targetTankRelativePos[axis] > 0) {
+			control.setD(axis, -5);
 		}
 		else 
-			control.setDx(5);
-		
-		if(targetRelativePos[1] > 0) {
-			control.setDy(-5);
-		}
-		else control.setDy(5);
+			control.setD(axis, 5);
+		return;
 	}
-	private void tooFar() {
-		if(targetRelativePos[0] > 0) {
-			control.setDx(5);
+	private void tooFar(int axis) {
+		if(targetTankRelativePos[axis] > 0) {
+			control.setD(axis, 5);
 		}
 		else 
-			control.setDx(-5);
-		
-		if(targetRelativePos[1] > 0) {
-			control.setDy(5);
-		}
-		else control.setDy(-5);
+			control.setD(axis, -5);
+		return;
+
 	}
-	private void closeEnough() {
-		control.setDx(0);
-		control.setDy(0);
+	private void closeEnough(int axis) {
+			control.setD(axis, 0);
+
 	}
 	
 }

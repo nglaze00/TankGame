@@ -41,7 +41,7 @@ public class Bullet implements Movable{
 	public void draw(Graphics g) {
 		
 	    g.setColor(Color.BLACK);  
-	    g.fillRect(pos[0], pos[1], 10,10);
+	    g.fillRect(pos[0] - 5, pos[1] - 5, 10,10);
 	}
 }
 
