@@ -13,7 +13,6 @@ public class TankAI {
 	private double[] targetTankRelativePos;
 	
 	private Bullet targetBullet;
-	private double targetBulletDist;
 	
 	private String[] priorities;
 	
@@ -96,39 +95,35 @@ public class TankAI {
 	}
 
 	private void setTargetBullet() {
-		if(game.bullets().size() > 0) {
-			targetBullet = game.bullets().get(0);
-			double closestDist = Double.MAX_VALUE;
-			for(Bullet bullet : game.bullets()) {
-				if(!bullet.equals(control)){
-					if(distanceFromBullet(bullet) < closestDist) {
-						targetBullet = bullet;
-					}
-					
-				}
-				
+		for(Bullet bullet : game.bullets()) {
+			if(bullet.isCloseTo(control)){
+				targetBullet = bullet;
+				return;
 			}
 		}
+		targetBullet = null;
 	}
 	
 	
 	private void setPriorities() {
-		//if(targetBullet.willHit(control)) {					//bullet must be on course to hit control
-			//priorities = {"bullet", "bullet"};
-			//return;
-	//	}
+		if(targetBullet != null) {
+			priorities[0] = "bullet";
+			priorities[1] = "bullet";
+			System.out.println("aaa");
+			return;
+		}
 		
 		priorities[0] = "tank";
 		priorities[1] = "tank";
 		setBoundaryDistances();
-		System.out.println(boundaryDistances[0] + " " + boundaryDistances[1] + " " + targetTankRelativePos[0] + " " + targetTankRelativePos[1]);
+		//System.out.println(boundaryDistances[0] + " " + boundaryDistances[1] + " " + targetTankRelativePos[0] + " " + targetTankRelativePos[1]);
 		if(Math.abs(boundaryDistances[0]) < 150) {					//boundary must be within 300 units
 			priorities[0] = "boundary";
 		}
 		if(Math.abs(boundaryDistances[1]) < 150) {
 			priorities[1] = "boundary";
 		}
-		System.out.println(priorities[0] + " " + priorities[1]);
+		//System.out.println(priorities[0] + " " + priorities[1]);
 
 		
 	}
@@ -136,6 +131,18 @@ public class TankAI {
 		int other = 1;
 		if(axis == 1) other = 0;
 		switch(priorities[axis]) {
+			case "bullet":
+				if(targetBullet.dPos()[1] != 0) {
+					control.setD(0, -control.dPos()[0]);
+					control.setD(1, targetBullet.dPos()[1]);
+					System.out.println("bullet" + targetBullet.dPos()[0] + " " + targetBullet.dPos()[1] + "tank" + control.dPos()[0] +
+							" " + control.dPos()[1]);
+				}
+				else {
+					control.setD(1, -control.dPos()[1]);
+					control.setD(0, 0);
+				}
+				break;
 			case "tank":
 				if(Math.abs(targetTankRelativePos[axis])  < 200) {
 					tooClose(axis);
