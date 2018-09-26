@@ -32,5 +32,5 @@ public class TankGame {
 //TODO
 
 //Bot:
-//Add bullet dodging / shooting
-//Prioritize boundary distance > target distance **
+//Make bullet avoiding better - always choose vector towards middle
+//stop getting caught in corners

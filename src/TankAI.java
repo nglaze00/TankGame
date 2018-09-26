@@ -132,15 +132,21 @@ public class TankAI {
 		if(axis == 1) other = 0;
 		switch(priorities[axis]) {
 			case "bullet":
-				if(targetBullet.dPos()[1] != 0) {
-					control.setD(0, -control.dPos()[0]);
-					control.setD(1, targetBullet.dPos()[1]);
+				if(targetBullet.dPos()[1] != 0 ) {
+					int[] orthagonalDPos = new int[2];
+					orthagonalDPos[1] = 5;
+					orthagonalDPos[0] = -(targetBullet.dPos()[1] * orthagonalDPos[1]) / targetBullet.dPos()[0];
+					control.setD(0, orthagonalDPos[0]);
+					control.setD(1, orthagonalDPos[1]);
 					System.out.println("bullet" + targetBullet.dPos()[0] + " " + targetBullet.dPos()[1] + "tank" + control.dPos()[0] +
 							" " + control.dPos()[1]);
 				}
 				else {
-					control.setD(1, -control.dPos()[1]);
-					control.setD(0, 0);
+					int[] orthagonalDPos = new int[2];
+					orthagonalDPos[0] = 5;
+					orthagonalDPos[1] = -(targetBullet.dPos()[0] * orthagonalDPos[0]) / targetBullet.dPos()[1];
+					control.setD(0, orthagonalDPos[0]);
+					control.setD(1, orthagonalDPos[1]);
 				}
 				break;
 			case "tank":

@@ -39,7 +39,7 @@ public class Bullet implements Movable{
 	
 	public boolean isCloseTo(Tank tank) {
 		double t = (this.pos()[0] - tank.pos()[0]) / (tank.dPos()[0] - this.dPos()[0]);
-		return Math.abs((this.dPos()[1] * t + this.pos()[1]) - (tank.dPos()[1] * t + tank.pos()[1])) <= tank.size() * 2; //bullet distance within tank size
+		return Math.abs((this.dPos()[1] * t + this.pos()[1]) - (tank.dPos()[1] * t + tank.pos()[1])) <= tank.size() * 5; //bullet distance within tank size
 	}
 	
 	

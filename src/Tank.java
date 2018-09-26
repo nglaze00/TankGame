@@ -93,7 +93,7 @@ public class Tank implements Movable{
 			
 		}
 		reloadLeft = reloadTime;
-		return new Bullet(new int[] {pos[0], pos[1]}, new int[] {lastDPos[0] * 5, lastDPos[1] * 5});
+		return new Bullet(new int[] {pos[0], pos[1]}, new int[] {lastDPos[0] * 3, lastDPos[1] * 3});
 		
 	}
 	
