@@ -32,5 +32,6 @@ public class TankGame {
 //TODO
 
 //Bot:
-//Make bullet avoiding better - always choose vector towards middle
+//Make bullet avoiding better - always choose vector away from bullet OR towards middle
 //stop getting caught in corners
+//Fire bullets

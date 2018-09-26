@@ -132,7 +132,7 @@ public class TankAI {
 		if(axis == 1) other = 0;
 		switch(priorities[axis]) {
 			case "bullet":
-				if(targetBullet.dPos()[1] != 0 ) {
+				if(targetBullet.dPos()[1] == 0) {
 					int[] orthagonalDPos = new int[2];
 					orthagonalDPos[1] = 5;
 					orthagonalDPos[0] = -(targetBullet.dPos()[1] * orthagonalDPos[1]) / targetBullet.dPos()[0];
