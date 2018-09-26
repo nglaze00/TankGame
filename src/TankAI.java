@@ -127,6 +127,46 @@ public class TankAI {
 
 		
 	}
+	private void setDPos() {
+		int other = 1;
+		if(axis == 1) other = 0;
+		switch(priorities[axis]) {
+			case "bullet":
+				if(targetBullet.dPos()[1] != 0) {
+					control.setD(0, -control.dPos()[0]);
+					control.setD(1, targetBullet.dPos()[1]);
+					System.out.println("bullet" + targetBullet.dPos()[0] + " " + targetBullet.dPos()[1] + "tank" + control.dPos()[0] +
+							" " + control.dPos()[1]);
+				}
+				else {
+					control.setD(1, -control.dPos()[1]);
+					control.setD(0, 0);
+				}
+				break;
+			case "tank":
+				if(Math.abs(targetTankRelativePos[axis])  < 200) {
+					tooClose(axis);
+					break;
+				}
+				else if(Math.abs(targetTankRelativePos[axis])  > 225) {
+					tooFar(axis);
+					break;
+				}
+				//else closeEnough(axis);
+				break;
+			case "boundary":
+				if(boundaryDistances[axis] < 0) {
+					control.setD(axis, 5);
+				}
+				else control.setD(axis, -5);
+				
+				//if(boundaryDistances[other] < 0)
+				//	control.setD(other, 5);
+				//else control.setD(other, -5);
+		}
+	}
+	
+	
 	private void setDPos(int axis) {
 		int other = 1;
 		if(axis == 1) other = 0;
