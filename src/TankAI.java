@@ -10,7 +10,7 @@ public class TankAI {
 	private double[] boundaryDistances;
 	
 	private ArrayList<Tank> targetTanks;
-	private double[] targetTankRelativePos;
+	private double[] targetTankVector;
 	
 	private Bullet targetBullet;
 	
@@ -21,7 +21,7 @@ public class TankAI {
 		this.game = game;
 		targetTanks = new ArrayList<Tank>();
 		boundaryDistances = new double[2];
-		targetTankRelativePos = new double[2];
+		targetTankVector = new double[2];
 		priorities = new String[2];
 	}
 	
@@ -31,6 +31,7 @@ public class TankAI {
 		setPriorities();
 		setDPos(0);
 		setDPos(1);
+		fireBullet();
 	}
 	
 	private void setTargets() {
@@ -56,7 +57,7 @@ public class TankAI {
 			}
 			
 		}
-		this.targetTankRelativePos[axis] = relativePos(closestTank, axis);
+		this.targetTankVector[axis] = relativePos(closestTank, axis);
 		return closestTank;
 	}
 	
@@ -127,12 +128,14 @@ public class TankAI {
 
 		
 	}
+	
 	private void setDPos(int axis) {
 		int other = 1;
 		if(axis == 1) other = 0;
 		switch(priorities[axis]) {
 			case "bullet":
 				if(targetBullet.dPos()[1] == 0) {
+					//uhh put this in a method
 					int[] orthagonalDPos = new int[2];
 					orthagonalDPos[1] = 5;
 					orthagonalDPos[0] = -(targetBullet.dPos()[1] * orthagonalDPos[1]) / targetBullet.dPos()[0];
@@ -150,11 +153,11 @@ public class TankAI {
 				}
 				break;
 			case "tank":
-				if(Math.abs(targetTankRelativePos[axis])  < 200) {
+				if(Math.abs(targetTankVector[axis])  < 200) {
 					tooClose(axis);
 					break;
 				}
-				else if(Math.abs(targetTankRelativePos[axis])  > 225) {
+				else if(Math.abs(targetTankVector[axis])  > 225) {
 					tooFar(axis);
 					break;
 				}
@@ -171,12 +174,9 @@ public class TankAI {
 				//else control.setD(other, -5);
 		}
 	}
-
-	
-	
 	private void tooClose(int axis) {
 	
-		if(targetTankRelativePos[axis] > 0) {
+		if(targetTankVector[axis] > 0) {
 			control.setD(axis, -5);
 		}
 		else 
@@ -184,7 +184,7 @@ public class TankAI {
 		return;
 	}
 	private void tooFar(int axis) {
-		if(targetTankRelativePos[axis] > 0) {
+		if(targetTankVector[axis] > 0) {
 			control.setD(axis, 5);
 		}
 		else 
@@ -194,7 +194,35 @@ public class TankAI {
 	}
 	private void closeEnough(int axis) {
 			control.setD(axis, 0);
-
 	}
 	
+	private void fireBullet() {
+
+	}
+	private int[] calculateBulletVector(int[] controlPos, int[] targetPos, int[] targetDPos) {
+		int bulletSpeed = 15;
+		int[] targetControlVector = new int[] {(controlPos[0] - targetPos[0]), (controlPos[1] - targetPos[1])};
+		//ADD: if target velocity = 0, just shoot at target
+		if(targetDPos[0] == 0 && targetDPos[1] == 0) {
+			return new int[] {-targetControlVector[0], -targetControlVector[1]};
+		}
+		double targetControlAngle = Math.acos((targetControlVector[0] * targetDPos[0])
+				+ (targetControlVector[1] * targetDPos[1])) 
+				/ (Math.sqrt(Math.pow(targetDPos[0], 2) + Math.pow(targetDPos[1], 2)) * Math.sqrt(Math.pow(targetControlVector[0], 2) + Math.pow(targetControlVector[1], 2)));
+		
+	}
+	
+	private boolean vectorsIntersect(int[] p1, int[] d1, int[] p2, int[] d2) {
+		if(d2[0] - d1[0] != 0) {
+			int time = (p1[0] - p2[0])/(d2[0] - d1[0]);
+			System.out.println(time * d2[1] + p2[1] - time * d1[1] + p1[1]);
+			return Math.abs(time * d2[1] + p2[1] - time * d1[1] + p1[1]) < 50;
+		}
+		else if(d2[1] - d1[1] != 0) {
+			int time = (p1[1] - p2[1])/(d2[1] - d1[1]);
+			System.out.println(time * d2[0] + p2[0] - time * d1[0] + p1[0]);
+			return Math.abs(time * d2[0] + p2[0] - time * d1[0] + p1[0]) < 50;
+		}
+		else return true;
+	}
 }

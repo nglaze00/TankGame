@@ -75,18 +75,6 @@ public class Tank implements Movable{
 		}
 	}
 
-	public void reload() {
-		if(reloadLeft > 0) {
-			reloadLeft--;
-		}
-	}
-	
-	public void draw(Graphics g) {
-		
-	    g.setColor(color);  
-	    g.fillRect(pos[0] - tSize/2, pos[1] - tSize/2, tSize,tSize);
-	}
-
 	public Bullet fireBullet() {
 		if(reloadLeft != 0) {
 			return null;
@@ -96,6 +84,21 @@ public class Tank implements Movable{
 		return new Bullet(new int[] {pos[0], pos[1]}, new int[] {lastDPos[0] * 3, lastDPos[1] * 3});
 		
 	}
+
+	public void reload() {
+		if(reloadLeft > 0) {
+			reloadLeft--;
+		}
+	}
+	public int reloadLeft() { return reloadLeft; }
+	
+	public void draw(Graphics g) {
+		
+	    g.setColor(color);  
+	    g.fillRect(pos[0] - tSize/2, pos[1] - tSize/2, tSize,tSize);
+	}
+
+	
 	
 	
 	public boolean equals(Tank tank2) {
