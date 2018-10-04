@@ -112,7 +112,7 @@ public class GameManager extends JFrame {
 	
 	
 	public static boolean willOverlap(Movable obj1, Movable obj2) {
-		int[] movedOjb1 = new int[] {obj1.pos()[0] + obj1.dPos()[0], obj1.pos()[1] + obj1.dPos()[1]};
+		double[] movedOjb1 = new double[] {obj1.pos()[0] + obj1.dPos()[0], obj1.pos()[1] + obj1.dPos()[1]};
 		
 
 		boolean xOverlaps = Math.abs(movedOjb1[0] - obj2.pos()[0]) < obj2.size();		//Assumes same size
@@ -126,14 +126,14 @@ public class GameManager extends JFrame {
 	}
 	
 	public boolean boundaryOverlapX(Movable obj1) {
-		int movedOjb1X = obj1.pos()[0] + obj1.dPos()[0];
+		double movedOjb1X = obj1.pos()[0] + obj1.dPos()[0];
 
 		boolean xOverlaps = movedOjb1X - obj1.size() / 2 < 0 || movedOjb1X + obj1.size() / 2 + 15 > boardSize[0];	//15 & 35 hardcoded to line up with window
 		
 		return xOverlaps;
 	}
 	public boolean boundaryOverlapY(Movable obj1) {
-		int movedOjb1Y = obj1.pos()[1] + obj1.dPos()[1];
+		double movedOjb1Y = obj1.pos()[1] + obj1.dPos()[1];
 		
 		boolean yOverlaps = movedOjb1Y - obj1.size() / 2 < 0 || movedOjb1Y + obj1.size() / 2 + 35 > boardSize[1];
 		

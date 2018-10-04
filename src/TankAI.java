@@ -36,9 +36,20 @@ public class TankAI {
 	
 	public void turn() {
 		
+<<<<<<< HEAD
 		setTargets();										
 		setPriority();
 		setDPos();
+=======
+		setTargets();										//Choose tank to focus on
+		setPriorities();
+		setDPos(0);
+		setDPos(1);
+		if(control.reloadLeft() == 0) {
+			fireBullet();
+		}
+		
+>>>>>>> cc235cb... successfully implemented bot firing bullets
 	}
 	
 	private void setTargets() {
@@ -110,6 +121,19 @@ public class TankAI {
 
 	}
 
+<<<<<<< HEAD
+=======
+	private void setTargetBullet() {
+		for(Bullet bullet : game.bullets()) {
+			if(bullet.isCloseTo(control) && bullet.owner() != game.tanks().indexOf(control)) {
+				targetBullet = bullet;
+				return;
+			}
+		}
+		targetBullet = null;
+	}
+	
+>>>>>>> cc235cb... successfully implemented bot firing bullets
 	
 	private void setPriority() {
 		if(targetBullet != null) {
@@ -131,8 +155,29 @@ public class TankAI {
 	private void setDPos() {
 		switch(priority) {
 			case "bullet":
+<<<<<<< HEAD
 				setDPosBullet();
 				return;
+=======
+				if(targetBullet.dPos()[1] == 0) {
+					//uhh put this in a method
+					double[] orthagonalDPos = new double[2];
+					orthagonalDPos[1] = 5;
+					orthagonalDPos[0] = -(targetBullet.dPos()[1] * orthagonalDPos[1]) / targetBullet.dPos()[0];
+					control.setD(0, orthagonalDPos[0]);
+					control.setD(1, orthagonalDPos[1]);
+					System.out.println("bullet" + targetBullet.dPos()[0] + " " + targetBullet.dPos()[1] + "tank" + control.dPos()[0] +
+							" " + control.dPos()[1]);
+				}
+				else {
+					double[] orthagonalDPos = new double[2];
+					orthagonalDPos[0] = 5;
+					orthagonalDPos[1] = -(targetBullet.dPos()[0] * orthagonalDPos[0]) / targetBullet.dPos()[1];
+					control.setD(0, orthagonalDPos[0]);
+					control.setD(1, orthagonalDPos[1]);
+				}
+				break;
+>>>>>>> cc235cb... successfully implemented bot firing bullets
 			case "tank":
 				setDPosTank();
 				return;
@@ -191,6 +236,7 @@ public class TankAI {
 		return;
 
 	}
+<<<<<<< HEAD
 	private void tooFar(int[] otherPoint) {
 		System.out.println("far");
 		//Sets control to move closer to given point along farther axis
@@ -201,6 +247,84 @@ public class TankAI {
 		System.out.println(axis);
 		if(otherPoint[axis] > 0) {
 			control.setD(axis, -5);
+=======
+	private void closeEnough(int axis) {
+			control.setD(axis, 0);
+	}
+	
+	private void fireBullet() {
+		double[] bulletVector = calculateBulletVector(control.pos(), targetTanks.get(0).pos(), targetTanks.get(0).dPos());
+		//System.out.println(bulletVector[0] + " " + bulletVector[1]);
+		double[] prevDPos = control.dPos().clone();
+		Bullet bullet = control.fireBulletAimed(bulletVector);
+		bullet.setOwner(game.tanks().indexOf(control));
+		game.addBullet(bullet);
+
+	}
+	private double[] calculateBulletVector(int[] controlPos, int[] targetPos, double[] targetDPos) {
+		//See docs for math lol (TODO: write math docs)
+		int bulletSpeed = 15;
+		int[] targetControlVector = new int[] {(controlPos[0] - targetPos[0]), (controlPos[1] - targetPos[1])};
+		double targetSpeed = Math.sqrt(Math.pow(targetDPos[0], 2) + Math.pow(targetDPos[1], 2));
+		if(targetDPos[0] == 0 && targetDPos[1] == 0) {
+			double bulletVectorMagnitude = Math.sqrt(Math.pow(targetControlVector[0],  2) + Math.pow(targetControlVector[1], 2));
+		
+			double[] bulletUnitVector = new double[] {-targetControlVector[0] / bulletVectorMagnitude, -targetControlVector[1] / bulletVectorMagnitude};
+			return new double[] {bulletUnitVector[0] * bulletSpeed, bulletUnitVector[1] * bulletSpeed};
+		}
+		//System.out.println(targetControlVector[0] + " " + targetControlVector[1]);
+		//System.out.println(targetDPos[0] + " " + targetDPos[1]);
+		double targetControlCosine = ((targetControlVector[0] * targetDPos[0])
+				+ (targetControlVector[1] * targetDPos[1])) 
+				/ (Math.sqrt(Math.pow(targetDPos[0], 2) + Math.pow(targetDPos[1], 2)) * Math.sqrt(Math.pow(targetControlVector[0], 2) + Math.pow(targetControlVector[1], 2)));
+		double targetControlAngle = Math.acos(targetControlCosine);
+		//System.out.println((targetControlAngle / Math.PI) + "pi");
+		
+		
+		double angleToHorizontal = Math.abs(Math.atan(targetControlVector[1]*1.0/targetControlVector[0]));
+		//System.out.println(targetControlVector[1]*1.0/targetControlVector[0]);
+		//System.out.println("    " + (angleToHorizontal / Math.PI) + "pi");
+		double bulletFireAngleTriangle = Math.asin(targetSpeed * Math.sin(targetControlAngle) / bulletSpeed);
+		double bulletFireAngle;
+		if(controlPos[1] < targetPos[1]) {
+			if(targetDPos[1] > 0) {
+				bulletFireAngle = angleToHorizontal + bulletFireAngleTriangle;
+			}
+			else {
+				bulletFireAngle = angleToHorizontal - bulletFireAngleTriangle;
+			}
+			if(controlPos[0] > targetPos[0]) {
+				bulletFireAngle = Math.PI - bulletFireAngle;
+			}
+		}
+		else{
+			if(targetDPos[1] < 0) {
+				bulletFireAngle = -(angleToHorizontal + bulletFireAngleTriangle);
+			}
+			else {
+				bulletFireAngle = -angleToHorizontal + bulletFireAngleTriangle;
+			}
+			if(controlPos[0] > targetPos[0]) {
+				bulletFireAngle = -Math.PI - bulletFireAngle;
+			}
+		}
+		
+		
+		System.out.println(" " + (bulletFireAngle / Math.PI) + "pi");
+		return new double[] {bulletSpeed * Math.cos(bulletFireAngle), bulletSpeed * Math.sin(bulletFireAngle)};
+	}
+	
+	private boolean vectorsIntersect(int[] p1, int[] d1, int[] p2, int[] d2) {
+		if(d2[0] - d1[0] != 0) {
+			int time = (p1[0] - p2[0])/(d2[0] - d1[0]);
+			System.out.println(time * d2[1] + p2[1] - time * d1[1] + p1[1]);
+			return Math.abs(time * d2[1] + p2[1] - time * d1[1] + p1[1]) < 50;
+		}
+		else if(d2[1] - d1[1] != 0) {
+			int time = (p1[1] - p2[1])/(d2[1] - d1[1]);
+			System.out.println(time * d2[0] + p2[0] - time * d1[0] + p1[0]);
+			return Math.abs(time * d2[0] + p2[0] - time * d1[0] + p1[0]) < 50;
+>>>>>>> cc235cb... successfully implemented bot firing bullets
 		}
 		else 
 			control.setD(axis, 5);
