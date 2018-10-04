@@ -27,8 +27,12 @@ public class GameManager extends JFrame {
 		bullets = new ArrayList<Bullet>();
 		boardSize = new int[] {width, height};
 		
-		for(int i = 0; i < players; i++) {
-			addTank(startShields, randPos(width, height, tankSize), tankSize, reloadTime, colors.get(i));
+		while(tanks.size() < players) {
+			int[] startPos = randPos(width, height, tankSize);
+			boolean overlaps = false;
+			if(validStart(startPos)) {
+				addTank(startShields, startPos, tankSize, reloadTime, colors.get(tanks.size()));
+			}
 		}
 		graphics = new GraphicsManager(width, height, this);
 		
@@ -160,7 +164,15 @@ public class GameManager extends JFrame {
 	
 	public static int[] randPos(int width, int height, int tSize) {
 		Random rand = new Random();
-		return new int[] {rand.nextInt(width - tSize), rand.nextInt(height - tSize)};
+		return new int[] {rand.nextInt(width - (tSize * 2)) + tSize, rand.nextInt(height - (tSize * 2)) + tSize};
+	}
+	public boolean validStart(int[] startPos) {
+		for(Tank tank : tanks) {
+			if(Math.sqrt(Math.pow(startPos[0] - tank.pos()[0], 2) + Math.pow(startPos[1] - tank.pos()[1], 2)) < 100) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

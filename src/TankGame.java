@@ -22,7 +22,9 @@ public class TankGame {
 		colors.add(Color.RED);
 		colors.add(Color.BLUE);
 		colors.add(Color.GREEN);
-		
+		colors.add(Color.YELLOW);
+		colors.add(Color.CYAN);
+		colors.add(Color.LIGHT_GRAY);
 		
 		GameManager game = new GameManager(width, height, players, startShields, tankSize, reloadTime, colors);
 	}
@@ -33,4 +35,5 @@ public class TankGame {
 
 //Bot:
 //Make bullet avoiding better - always choose vector away from bullet OR towards middle
-//stop getting caught in corners
+
+//Don't spawn outside borders
