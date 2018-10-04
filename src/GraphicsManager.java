@@ -43,7 +43,7 @@ public class GraphicsManager {
                 	if (bullet != null) {
                 		if(bullet.dPos()[0] != 0 || bullet.dPos()[1] != 0) {
                 			bullet.setOwner(0);
-                			game.addBullet(bullet);
+                			game.bullets().add(bullet);
                 		}
                 	}
                 }

@@ -30,11 +30,11 @@ public class GameManager extends JFrame {
 		boardSize = new int[] {width, height};
 		
 		while(tanks.size() < players) {
-			addTank(startShields, randPos(width, height, tankSize), tankSize, reloadTime, colors.get(tanks.size()));
+			tanks.add(new Tank(startShields, randPos(width, height, tankSize), tankSize, reloadTime, colors.get(tanks.size()), tanks.size()));
 		}
 		graphics = new GraphicsManager(width, height, this);
 		if(hasBot = true) {
-			addTank(startShields, randPos(width, height, tankSize), tankSize, reloadTime * 5, Color.BLACK);
+			tanks.add(new Tank(startShields, randPos(width, height, tankSize), tankSize, reloadTime * 3, Color.BLACK, tanks.size()));
 		}
 		bot = new TankAI(tanks.get(tanks.size() - 1), this);
 		play();
@@ -44,7 +44,6 @@ public class GameManager extends JFrame {
 	public void play() {
 		
 		while(tanks.size() > 1) {
-			bot.turn();
 			try {
 				Thread.sleep(50);
 			} catch (InterruptedException e) {
@@ -52,7 +51,7 @@ public class GameManager extends JFrame {
 			}
 			moveTanks();
 			moveBullets();
-			
+			bot.turn();
 		}
 	}
 	
@@ -119,8 +118,8 @@ public class GameManager extends JFrame {
 		double[] movedOjb1 = new double[] {obj1.pos()[0] + obj1.dPos()[0], obj1.pos()[1] + obj1.dPos()[1]};
 		
 
-		boolean xOverlaps = Math.abs(movedOjb1[0] - obj2.pos()[0]) <= obj2.size();		//Assumes same size
-		boolean yOverlaps = Math.abs(movedOjb1[1] - obj2.pos()[1]) <= obj2.size();
+		boolean xOverlaps = Math.abs(movedOjb1[0] - obj2.pos()[0]) <= obj2.size() / 2 + 10;		//Assumes same size
+		boolean yOverlaps = Math.abs(movedOjb1[1] - obj2.pos()[1]) <= obj2.size() / 2 + 10;
 		
 		if(xOverlaps && yOverlaps) {
 			return true;
@@ -142,13 +141,6 @@ public class GameManager extends JFrame {
 		boolean yOverlaps = movedOjb1Y - obj1.size() / 2 < 0 || movedOjb1Y + obj1.size() / 2 + 35 > boardSize[1];
 		
 		return yOverlaps;
-	}
-	
-	public void addTank(int startShields, int[] startPos, int tankSize, int reloadTime, Color color) {
-		tanks.add(new Tank(startShields, startPos, tankSize, reloadTime, color));
-	}
-	public void addBullet(Bullet bullet) {
-		bullets.add(bullet);
 	}
 	
 	public ArrayList<Tank> tanks(){

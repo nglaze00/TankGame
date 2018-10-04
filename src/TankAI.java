@@ -205,7 +205,7 @@ public class TankAI {
 		double[] prevDPos = control.dPos().clone();
 		Bullet bullet = control.fireBulletAimed(bulletVector);
 		bullet.setOwner(game.tanks().indexOf(control));
-		game.addBullet(bullet);
+		game.bullets().add(bullet);
 
 	}
 	private double[] calculateBulletVector(int[] controlPos, int[] targetPos, double[] targetDPos) {

@@ -30,6 +30,8 @@ public class DrawObjects extends JPanel{
         timer.start();
 	}
 	
+	
+	
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		for (Tank tank : tanks) {

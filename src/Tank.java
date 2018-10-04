@@ -17,8 +17,10 @@ public class Tank implements Movable{
 	private int shields;
 	private int reloadLeft;
 	private int reloadTime;
+	
+	private int owner;
 		
-	public Tank(int startShields, int[] startPos, int size, int reloadTime, Color color) {
+	public Tank(int startShields, int[] startPos, int size, int reloadTime, Color color, int owner) {
 		pos = startPos;
 		dPos = new double[] {0, 0};
 		lastDPos = new double[] {0, 0};
@@ -27,6 +29,7 @@ public class Tank implements Movable{
 		this.reloadTime = reloadTime;
 		tSize = size;
 		this.color = color;
+		this.owner = owner;
 	}
 	
 	public int[] pos() {
@@ -103,9 +106,14 @@ public class Tank implements Movable{
 	public int reloadLeft() { return reloadLeft; }
 	
 	public void draw(Graphics g) {
-		
 	    g.setColor(color);  
 	    g.fillRect(pos[0] - tSize/2, pos[1] - tSize/2, tSize,tSize);
+	    String[] tankInfo = tankInfo();
+	    System.out.println(owner);
+	    g.drawString(tankInfo[0], 100 * owner, 920);
+	    g.drawString(tankInfo[1], 100 * owner, 930);
+	    g.drawString(tankInfo[2], 100 * owner, 940);
+	    
 	}
 
 	
@@ -120,6 +128,16 @@ public class Tank implements Movable{
 	
 	public String toString() {
 		return color.toString();
+	}
+	public String[] tankInfo() {
+		String[] s = new String[3];
+		s[0] = "Tank " + owner;
+		s[1] = "Shields left: " + this.shields();
+		if(this.reloadLeft() > 0) {
+			s[2] = "reloading " + this.reloadLeft();
+		}
+		else s[2] = "READY TO FIRE!";
+		return s;
 	}
 	
 }
