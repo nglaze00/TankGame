@@ -115,8 +115,8 @@ public class GameManager extends JFrame {
 		double[] movedOjb1 = new double[] {obj1.pos()[0] + obj1.dPos()[0], obj1.pos()[1] + obj1.dPos()[1]};
 		
 
-		boolean xOverlaps = Math.abs(movedOjb1[0] - obj2.pos()[0]) < obj2.size();		//Assumes same size
-		boolean yOverlaps = Math.abs(movedOjb1[1] - obj2.pos()[1]) < obj2.size();
+		boolean xOverlaps = Math.abs(movedOjb1[0] - obj2.pos()[0]) <= obj2.size();		//Assumes same size
+		boolean yOverlaps = Math.abs(movedOjb1[1] - obj2.pos()[1]) <= obj2.size();
 		
 		if(xOverlaps && yOverlaps) {
 			return true;

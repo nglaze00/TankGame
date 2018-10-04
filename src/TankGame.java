@@ -32,10 +32,5 @@ public class TankGame {
 //TODO
 
 //Bot:
-<<<<<<< HEAD
-//Add bullet dodging / shooting
-//Prioritize boundary distance > target distance **
-=======
 //Make bullet avoiding better - always choose vector away from bullet OR towards middle
 //stop getting caught in corners
->>>>>>> cc235cb... successfully implemented bot firing bullets
