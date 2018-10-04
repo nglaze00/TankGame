@@ -20,7 +20,9 @@ public class GameManager extends JFrame {
 	
 	private TankAI bot;
 	
-	public GameManager(int width, int height, int players, int startShields, int tankSize, int reloadTime, ArrayList<Color> colors) {
+	Random rand;
+	
+	public GameManager(int width, int height, int players, int startShields, int tankSize, int reloadTime, ArrayList<Color> colors, boolean hasBot) {
 		this.colors = colors;
 
 		tanks = new ArrayList<Tank>();
@@ -28,15 +30,13 @@ public class GameManager extends JFrame {
 		boardSize = new int[] {width, height};
 		
 		while(tanks.size() < players) {
-			int[] startPos = randPos(width, height, tankSize);
-			boolean overlaps = false;
-			if(validStart(startPos)) {
-				addTank(startShields, startPos, tankSize, reloadTime, colors.get(tanks.size()));
-			}
+			addTank(startShields, randPos(width, height, tankSize), tankSize, reloadTime, colors.get(tanks.size()));
 		}
 		graphics = new GraphicsManager(width, height, this);
-		
-		bot = new TankAI(tanks.get(1), this);
+		if(hasBot = true) {
+			addTank(startShields, randPos(width, height, tankSize), tankSize, reloadTime * 5, Color.BLACK);
+		}
+		bot = new TankAI(tanks.get(tanks.size() - 1), this);
 		play();
 		System.out.println("Player " + tanks.get(0).color() + " wins!");
 	}
@@ -162,9 +162,15 @@ public class GameManager extends JFrame {
 		return boardSize;
 	}
 	
-	public static int[] randPos(int width, int height, int tSize) {
-		Random rand = new Random();
-		return new int[] {rand.nextInt(width - (tSize * 2)) + tSize, rand.nextInt(height - (tSize * 2)) + tSize};
+	public int[] randPos(int width, int height, int tSize) {
+		rand = new Random();
+		while(true) {
+			int[] startPos = new int[] {rand.nextInt(width - (tSize * 2)) + tSize, rand.nextInt(height - (tSize * 2)) + tSize};
+			if(validStart(startPos)) {
+				return startPos;
+			}
+		}
+			
 	}
 	public boolean validStart(int[] startPos) {
 		for(Tank tank : tanks) {

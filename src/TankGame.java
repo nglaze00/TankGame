@@ -15,7 +15,8 @@ public class TankGame {
 		int startShields = 3;
 		
 		//Players
-		int players = 2;
+		int players = 1;
+		boolean hasBot = true;
 		
 		//Colors
 		ArrayList<Color> colors = new ArrayList<Color>();
@@ -26,7 +27,7 @@ public class TankGame {
 		colors.add(Color.CYAN);
 		colors.add(Color.LIGHT_GRAY);
 		
-		GameManager game = new GameManager(width, height, players, startShields, tankSize, reloadTime, colors);
+		GameManager game = new GameManager(width, height, players, startShields, tankSize, reloadTime, colors, hasBot);
 	}
 }
 
