@@ -11,7 +11,7 @@ public class TankGame {
 		
 		//Tank stats
 		int tankSize = 50;
-		int reloadTime = 5;
+		int reloadTime = 10;
 		int startShields = 3;
 		
 		//Players
@@ -34,4 +34,3 @@ public class TankGame {
 //Bot:
 //Make bullet avoiding better - always choose vector away from bullet OR towards middle
 //stop getting caught in corners
-//Fire bullets

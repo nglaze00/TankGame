@@ -9,8 +9,8 @@ import javax.swing.JPanel;
 public class Tank implements Movable{
 
 	private int[] pos;
-	private int[] dPos;
-	private int[] lastDPos;
+	private double[] dPos;
+	private double[] lastDPos;
 	private int tSize;
 	private Color color;
 	
@@ -20,8 +20,8 @@ public class Tank implements Movable{
 		
 	public Tank(int startShields, int[] startPos, int size, int reloadTime, Color color) {
 		pos = startPos;
-		dPos = new int[] {0, 0};
-		lastDPos = new int[] {0, 0};
+		dPos = new double[] {0, 0};
+		lastDPos = new double[] {0, 0};
 		shields = startShields;
 		reloadLeft = 0;
 		this.reloadTime = reloadTime;
@@ -32,7 +32,7 @@ public class Tank implements Movable{
 	public int[] pos() {
 		return pos;
 	}
-	public int[] dPos() {
+	public double[] dPos() {
 		return dPos;
 	}
 
@@ -60,6 +60,9 @@ public class Tank implements Movable{
 	public void setD(int axis, int d) {
 		dPos[axis] = d;
 	}
+	public void setD(int axis, double d) {
+		dPos[axis] = d;
+	}
 	
 	public void moveX() {
 		pos[0] += dPos[0];
@@ -81,8 +84,15 @@ public class Tank implements Movable{
 			
 		}
 		reloadLeft = reloadTime;
-		return new Bullet(new int[] {pos[0], pos[1]}, new int[] {lastDPos[0] * 3, lastDPos[1] * 3});
+		return new Bullet(new int[] {pos[0], pos[1]}, new double[] {lastDPos[0] * 3, lastDPos[1] * 3});
 		
+	}
+	public Bullet fireBulletAimed(double[] vector) {
+		if(reloadLeft != 0) {
+			return null;
+		}
+		reloadLeft = reloadTime;
+		return new Bullet(new int[] {pos[0], pos[1]}, new double[] {vector[0], vector[1]});
 	}
 
 	public void reload() {

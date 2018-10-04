@@ -1,7 +1,7 @@
 
 public interface Movable {
 	int[] pos();
-	int[] dPos();
+	double[] dPos();
 	void moveX();
 	void moveY();
 	int size();

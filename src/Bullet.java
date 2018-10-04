@@ -4,11 +4,11 @@ import java.awt.Graphics;
 public class Bullet implements Movable{
 	
 	private int[] pos;
-	private int[] dPos;
+	private double[] dPos;
 	private int owner;
 	private int tSize;
 	
-	public Bullet(int[] pos, int[] dPos) {
+	public Bullet(int[] pos, double[] dPos) {
 		this.pos = pos;
 		this.dPos = dPos;
 		this.tSize = 10;
@@ -30,7 +30,7 @@ public class Bullet implements Movable{
 	public void moveY() {
 		pos[1] += dPos[1];
 	}
-	public int[] dPos() {
+	public double[] dPos() {
 		return dPos;
 	}
 	public int size() {
