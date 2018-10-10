@@ -34,7 +34,7 @@ public class GameManager extends JFrame {
 		}
 		graphics = new GraphicsManager(width, height, this);
 		if(hasBot = true) {
-			tanks.add(new Tank(startShields, randPos(width, height, tankSize), tankSize, reloadTime * 3, Color.BLACK, tanks.size()));
+			tanks.add(new Tank(startShields, randPos(width, height, tankSize), tankSize, reloadTime, Color.BLACK, tanks.size()));
 		}
 		bot = new TankAI(tanks.get(tanks.size() - 1), this);
 		play();

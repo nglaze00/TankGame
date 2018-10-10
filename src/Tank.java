@@ -90,7 +90,7 @@ public class Tank implements Movable{
 		return new Bullet(new int[] {pos[0], pos[1]}, new double[] {lastDPos[0] * 3, lastDPos[1] * 3});
 		
 	}
-	public Bullet fireBulletAimed(double[] vector) {
+	public Bullet fireBullet(double[] vector) {
 		if(reloadLeft != 0) {
 			return null;
 		}
@@ -109,7 +109,6 @@ public class Tank implements Movable{
 	    g.setColor(color);  
 	    g.fillRect(pos[0] - tSize/2, pos[1] - tSize/2, tSize,tSize);
 	    String[] tankInfo = tankInfo();
-	    System.out.println(owner);
 	    g.drawString(tankInfo[0], 100 * owner, 920);
 	    g.drawString(tankInfo[1], 100 * owner, 930);
 	    g.drawString(tankInfo[2], 100 * owner, 940);

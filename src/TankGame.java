@@ -12,7 +12,7 @@ public class TankGame {
 		//Tank stats
 		int tankSize = 50;
 		int reloadTime = 10;
-		int startShields = 3;
+		int startShields = 10;
 		
 		//Players
 		int players = 1;

@@ -3,6 +3,8 @@ import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.JFrame;
 
@@ -21,24 +23,66 @@ public class GraphicsManager {
 		frame.setSize(width, height);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setBackground(Color.WHITE);
-		
+		frame.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Tank tank = game.tanks().get(0);
+				int[] target = new int[] {e.getX(), e.getY()};
+				int[] tankPos = tank.pos();
+				double[] bulletDir = new double[] {target[0] - tankPos[0], target[1] - tankPos[1]};
+				double dirMag = Math.sqrt(Math.pow(bulletDir[0], 2) + Math.pow(bulletDir[1], 2));
+				double[] bulletVector = new double[] {15*bulletDir[0]/dirMag, 15*bulletDir[1]/dirMag};
+	            Bullet bullet = tank.fireBullet(bulletVector);
+		        if(bullet != null) {
+	            	if(bullet.dPos()[0] != 0 || bullet.dPos()[1] != 0) {
+		             	bullet.setOwner(0);
+		               	game.bullets().add(bullet);
+		            }   
+		        }
+			}
+		});
 		frame.addKeyListener(new KeyListener(){
 			@Override
             public void keyPressed(KeyEvent e) {
                 int key = e.getKeyCode();
-				if(key == KeyEvent.VK_UP){
+				if(key == KeyEvent.VK_W){
                     game.tanks().get(0).setD(1, -5);
                 }
-                if(key == KeyEvent.VK_DOWN){
+                if(key == KeyEvent.VK_S){
                     game.tanks().get(0).setD(1, 5);
                 }
-                if(key == KeyEvent.VK_LEFT){
+                if(key == KeyEvent.VK_A){
                     game.tanks().get(0).setD(0, -5);
                 }
-                if(key == KeyEvent.VK_RIGHT){
+                if(key == KeyEvent.VK_D){
                     game.tanks().get(0).setD(0, 5);
                 }
-                if(key == KeyEvent.VK_ENTER) {
+                if(key == KeyEvent.VK_SPACE) {
                 	Bullet bullet = game.tanks().get(0).fireBullet();
                 	if (bullet != null) {
                 		if(bullet.dPos()[0] != 0 || bullet.dPos()[1] != 0) {
@@ -56,16 +100,16 @@ public class GraphicsManager {
             @Override
             public void keyReleased(KeyEvent e) {
             	int key = e.getKeyCode();
-            	if(key == KeyEvent.VK_UP){
+            	if(key == KeyEvent.VK_W){
                     game.tanks().get(0).setD(1, 0);
                 }
-                if(key == KeyEvent.VK_DOWN){
+                if(key == KeyEvent.VK_S){
                     game.tanks().get(0).setD(1, 0);
                 }
-                if(key == KeyEvent.VK_LEFT){
+                if(key == KeyEvent.VK_A){
                     game.tanks().get(0).setD(0, 0);
                 }
-                if(key == KeyEvent.VK_RIGHT){
+                if(key == KeyEvent.VK_D){
                     game.tanks().get(0).setD(0, 0);
                 }           
             }

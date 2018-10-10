@@ -113,7 +113,6 @@ public class TankAI {
 		if(targetBullet != null) {
 			priorities[0] = "bullet";
 			priorities[1] = "bullet";
-			System.out.println("aaa");
 			return;
 		}
 		
@@ -141,16 +140,20 @@ public class TankAI {
 					//uhh put this in a method
 					double[] orthagonalDPos = new double[2];
 					orthagonalDPos[1] = 5;
-					orthagonalDPos[0] = -(targetBullet.dPos()[1] * orthagonalDPos[1]) / targetBullet.dPos()[0];
+					orthagonalDPos[0] = 5;
+					if (-(targetBullet.dPos()[1] * orthagonalDPos[1]) / targetBullet.dPos()[0] < 0) {
+						orthagonalDPos[0] = -5;
+					}
 					control.setD(0, orthagonalDPos[0]);
 					control.setD(1, orthagonalDPos[1]);
-					System.out.println("bullet" + targetBullet.dPos()[0] + " " + targetBullet.dPos()[1] + "tank" + control.dPos()[0] +
-							" " + control.dPos()[1]);
 				}
 				else {
 					double[] orthagonalDPos = new double[2];
 					orthagonalDPos[0] = 5;
-					orthagonalDPos[1] = -(targetBullet.dPos()[0] * orthagonalDPos[0]) / targetBullet.dPos()[1];
+					orthagonalDPos[1] = 5;
+					if(-(targetBullet.dPos()[0] * orthagonalDPos[0]) / targetBullet.dPos()[1] < 0) {
+						orthagonalDPos[1] = -5;
+					}
 					control.setD(0, orthagonalDPos[0]);
 					control.setD(1, orthagonalDPos[1]);
 				}
@@ -203,7 +206,7 @@ public class TankAI {
 		double[] bulletVector = calculateBulletVector(control.pos(), targetTanks.get(0).pos(), targetTanks.get(0).dPos());
 		//System.out.println(bulletVector[0] + " " + bulletVector[1]);
 		double[] prevDPos = control.dPos().clone();
-		Bullet bullet = control.fireBulletAimed(bulletVector);
+		Bullet bullet = control.fireBullet(bulletVector);
 		bullet.setOwner(game.tanks().indexOf(control));
 		game.bullets().add(bullet);
 
@@ -257,7 +260,6 @@ public class TankAI {
 		}
 		
 		
-		System.out.println(" " + (bulletFireAngle / Math.PI) + "pi");
 		return new double[] {bulletSpeed * Math.cos(bulletFireAngle), bulletSpeed * Math.sin(bulletFireAngle)};
 	}
 	
