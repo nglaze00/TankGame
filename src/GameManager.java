@@ -89,7 +89,9 @@ public class GameManager extends JFrame {
 	public void moveBullets() {
 		ArrayList<Bullet> bulletsRemove = new ArrayList<>();
 		ArrayList<Tank> tanksRemove = new ArrayList<>();
-		for(Bullet bullet : bullets) {
+		
+		for(int i = 0; i < bullets.size(); i++) {
+			Bullet bullet = bullets.get(i);
 			if(boundaryOverlapX(bullet) || boundaryOverlapY(bullet)) {
 				bulletsRemove.add(bullet);
 			}

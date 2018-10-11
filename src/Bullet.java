@@ -46,9 +46,7 @@ public class Bullet implements Movable{
 		}
 		else t = (this.pos()[0] - tank.pos()[0]) / (tank.dPos()[0] - this.dPos()[0]);
 		
-		//double[] tankNewPos = new double[] {tank.pos()[0] + tank.dPos()[0] * t, tank.pos()[1] + tank.dPos()[1] * t};
-		//double[] bulletNewPos = new double[] {this.pos()[0] + this.dPos()[0] * t, this.pos()[1] + this.dPos()[1] * t};
-		return Math.abs((this.dPos()[tAxis] * t + this.pos()[tAxis]) - (tank.dPos()[tAxis] * t + tank.pos()[tAxis])) <= tank.size() * 5;
+		return Math.abs((this.dPos()[tAxis] * t + this.pos()[tAxis]) - (tank.dPos()[tAxis] * t + tank.pos()[tAxis])) <= tank.size() * 3;
 
 	}
 

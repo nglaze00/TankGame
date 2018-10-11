@@ -34,6 +34,8 @@ public class TankAI {
 		if(control.reloadLeft() == 0) {
 			fireBullet();
 		}
+
+		
 		
 	}
 	
@@ -99,13 +101,19 @@ public class TankAI {
 	}
 
 	private void setTargetBullet() {
-		for(Bullet bullet : game.bullets()) {
-			if(bullet.isCloseTo(control) && bullet.owner() != game.tanks().indexOf(control)) {
-				targetBullet = bullet;
-				return;
+		targetBullet = null;
+		if(game.bullets().size() > 0) {
+			Bullet closestBullet = game.bullets().get(0);
+			double closestDist = Double.MAX_VALUE;
+			for(Bullet bullet : game.bullets()) {
+				double dist = distanceFromBullet(bullet);
+				if(dist < closestDist && dist < 150 && bullet.owner() != game.tanks().indexOf(control)) {
+					targetBullet = bullet;
+					closestDist = dist;
+				}			
 			}
 		}
-		targetBullet = null;
+		
 	}
 	
 	
@@ -136,27 +144,16 @@ public class TankAI {
 		if(axis == 1) other = 0;
 		switch(priorities[axis]) {
 			case "bullet":
-				if(targetBullet.dPos()[1] == 0) {
-					//uhh put this in a method
-					double[] orthagonalDPos = new double[2];
-					orthagonalDPos[1] = 5;
-					orthagonalDPos[0] = 5;
-					if (-(targetBullet.dPos()[1] * orthagonalDPos[1]) / targetBullet.dPos()[0] < 0) {
-						orthagonalDPos[0] = -5;
-					}
-					control.setD(0, orthagonalDPos[0]);
-					control.setD(1, orthagonalDPos[1]);
+				ArrayList<double[]> vectors = orthagonalScaledVectors(targetBullet.dPos(), Math.sqrt(50));
+				int vectorChoice;
+				if(control.pos()[1] > (targetBullet.pos()[1] + targetBullet.dPos()[1]/targetBullet.dPos()[0] * (control.pos()[0] - targetBullet.pos()[0]))) {
+					vectorChoice = 0;
 				}
 				else {
-					double[] orthagonalDPos = new double[2];
-					orthagonalDPos[0] = 5;
-					orthagonalDPos[1] = 5;
-					if(-(targetBullet.dPos()[0] * orthagonalDPos[0]) / targetBullet.dPos()[1] < 0) {
-						orthagonalDPos[1] = -5;
-					}
-					control.setD(0, orthagonalDPos[0]);
-					control.setD(1, orthagonalDPos[1]);
+					vectorChoice = 1;
 				}
+				control.setD(0, vectors.get(vectorChoice)[0]);
+				control.setD(1, vectors.get(vectorChoice)[1]);
 				break;
 			case "tank":
 				if(Math.abs(targetTankVector[axis])  < 200) {
@@ -261,6 +258,21 @@ public class TankAI {
 		
 		
 		return new double[] {bulletSpeed * Math.cos(bulletFireAngle), bulletSpeed * Math.sin(bulletFireAngle)};
+	}
+	
+	private ArrayList<double[]> orthagonalScaledVectors(double[] vector, double fMag) {
+		ArrayList<double[]> orthagonalVectors = new ArrayList<double[]>();
+		for(int i = 0; i < 2; i++) {
+			double[] orthagonal = new double[2];
+			orthagonal[1] = 1 - (2*i);
+			orthagonal[0] = -(vector[1] / vector[0]) * orthagonal[1];
+			orthagonalVectors.add(scaleVectorTo(orthagonal, fMag));
+		}
+		return orthagonalVectors;
+	}
+	private double[] scaleVectorTo(double[] vector, double fMag) {
+		double iMag = Math.sqrt(Math.pow(vector[0], 2) + Math.pow(vector[1], 2));
+		return new double[] {vector[0] / iMag * fMag, vector[1] / iMag * fMag};
 	}
 	
 	private boolean vectorsIntersect(int[] p1, int[] d1, int[] p2, int[] d2) {
