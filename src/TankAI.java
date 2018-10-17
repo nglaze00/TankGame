@@ -6,6 +6,7 @@ public class TankAI {
 	private GameManager game;
 	
 	private Tank control;
+	private double controlSpeed;
 	
 	private double[] boundaryDistances;
 	
@@ -13,16 +14,20 @@ public class TankAI {
 	private double[] targetTankVector;
 	
 	private Bullet targetBullet;
+	private int dPosLock;
 	
 	private String[] priorities;
+	
 	
 	public TankAI(Tank tank, GameManager game) {
 		this.control = tank;
 		this.game = game;
-		targetTanks = new ArrayList<Tank>();
-		boundaryDistances = new double[2];
-		targetTankVector = new double[2];
-		priorities = new String[2];
+		this.targetTanks = new ArrayList<Tank>();
+		this.boundaryDistances = new double[2];
+		this.targetTankVector = new double[2];
+		this.priorities = new String[2];
+		this.dPosLock = 20;
+		this.controlSpeed = Math.sqrt(50);
 	}
 	
 	public void turn() {
@@ -76,8 +81,8 @@ public class TankAI {
 	}
 	private double distanceFromBullet(Bullet bullet) {
 		
-		return Math.sqrt(Math.pow(distance(control.pos()[0], bullet.pos()[0]), 2) - 
-				distance(control.pos()[1], bullet.pos()[1]));
+		return Math.sqrt(Math.pow(distance(control.pos()[0], bullet.pos()[0]), 2) 
+				+ Math.pow(distance(control.pos()[1], bullet.pos()[1]), 2));
 	}
 	private void setBoundaryDistances() {
 		
@@ -101,23 +106,28 @@ public class TankAI {
 	}
 
 	private void setTargetBullet() {
-		targetBullet = null;
+		Bullet old = targetBullet;
 		if(game.bullets().size() > 0) {
 			Bullet closestBullet = game.bullets().get(0);
 			double closestDist = Double.MAX_VALUE;
 			for(Bullet bullet : game.bullets()) {
 				double dist = distanceFromBullet(bullet);
-				if(dist < closestDist && dist < 150 && bullet.owner() != game.tanks().indexOf(control)) {
+				if(dist < closestDist && dist < 150 && bullet.owner() != game.tanks().indexOf(control)) {	//150: distance at which tries to avoid bullet
 					targetBullet = bullet;
 					closestDist = dist;
 				}			
 			}
 		}
+		else {
+			targetBullet = null;
+		}
+		
 		
 	}
 	
 	
 	private void setPriorities() {
+		setBoundaryDistances();
 		if(targetBullet != null) {
 			priorities[0] = "bullet";
 			priorities[1] = "bullet";
@@ -126,7 +136,6 @@ public class TankAI {
 		
 		priorities[0] = "tank";
 		priorities[1] = "tank";
-		setBoundaryDistances();
 		//System.out.println(boundaryDistances[0] + " " + boundaryDistances[1] + " " + targetTankRelativePos[0] + " " + targetTankRelativePos[1]);
 		if(Math.abs(boundaryDistances[0]) < 150) {					//boundary must be within 300 units
 			priorities[0] = "boundary";
@@ -140,13 +149,52 @@ public class TankAI {
 	}
 	
 	private void setDPos(int axis) {
+		if(dPosLock > 0) {
+			dPosLock--;
+			System.out.println(dPosLock);
+			return;
+		}
 		int other = 1;
 		if(axis == 1) other = 0;
+		System.out.println(control.pos()[axis]);
+		if(control.pos()[axis] < 50){
+			control.setD(axis, this.controlSpeed);
+			this.dPosLock = 5;
+			return;
+		}
+		else if(control.pos()[axis] > 950) {
+			control.setD(axis, -this.controlSpeed);
+			this.dPosLock = 5;
+			return;
+		}
 		switch(priorities[axis]) {
 			case "bullet":
-				ArrayList<double[]> vectors = orthagonalScaledVectors(targetBullet.dPos(), Math.sqrt(50));
+				ArrayList<double[]> vectors = orthagonalScaledVectors(targetBullet.dPos(), this.controlSpeed);
 				int vectorChoice;
-				if(control.pos()[1] > (targetBullet.pos()[1] + targetBullet.dPos()[1]/targetBullet.dPos()[0] * (control.pos()[0] - targetBullet.pos()[0]))) {
+				/**if(Math.abs(boundaryDistances[0]) < 150 || Math.abs(boundaryDistances[1]) < 150){	//If close to boundary, choose based on moving away from boundary
+					this.dPosLock = 20;
+					
+					int distChoice;
+					if(Math.abs(boundaryDistances[0]) < Math.abs(boundaryDistances[1])) {		    //If close to left wall, choose vector that moves right
+						distChoice = 0;																//etc. for all walls
+					}
+					else distChoice = 1;
+					if(control.pos()[distChoice] < 150) {
+						if (vectors.get(0)[distChoice] > 0) {
+							vectorChoice = 0;
+						}
+						else vectorChoice = 1;
+					}
+					else {
+						if(vectors.get(0)[distChoice] < 0) {
+							vectorChoice = 0;
+						}
+						else vectorChoice = 1;
+					}
+					System.out.println("too close");
+						
+				}
+				else **/if(control.pos()[1] > (targetBullet.pos()[1] + targetBullet.dPos()[1]/targetBullet.dPos()[0] * (control.pos()[0] - targetBullet.pos()[0]))) {
 					vectorChoice = 0;
 				}
 				else {

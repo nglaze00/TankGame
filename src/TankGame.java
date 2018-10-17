@@ -38,3 +38,4 @@ public class TankGame {
 //Make bullet avoiding better - always choose vector away from bullet OR towards middle
 //Rewrite without axes
 //Don't spawn outside borders
+//Fix player mvmt
