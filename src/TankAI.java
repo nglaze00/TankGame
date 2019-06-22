@@ -31,8 +31,11 @@ public class TankAI {
 	}
 	
 	public void turn() {
+		/**
+		 * Updates AI's direction of movement & target
+		 */
 		
-		setTargets();										//Choose tank to focus on
+		setTargets();										
 		setPriorities();
 		setDPos(0);
 		setDPos(1);
@@ -51,10 +54,16 @@ public class TankAI {
 		
 	}
 	private void setTargetTanks() {
+		/**
+		 * Sets closest two tanks as targets
+		 */
 		targetTanks.add(0, closestTank(0));
 		targetTanks.add(1, closestTank(1));
 	}
 	private Tank closestTank(int axis) {
+		/**
+		 * Retursn closest tank
+		 */
 		Tank closestTank = game.tanks().get(0);
 		double closestDist = Double.MAX_VALUE;
 		for(Tank tank : game.tanks()) {
@@ -85,6 +94,9 @@ public class TankAI {
 				+ Math.pow(distance(control.pos()[1], bullet.pos()[1]), 2));
 	}
 	private void setBoundaryDistances() {
+		/**
+		 * Updates how far self is from each boundary
+		 */
 		
 		double left = -control.pos()[0];
 		double right = game.boardSize()[0] - control.pos()[0];
@@ -101,11 +113,17 @@ public class TankAI {
 
 	}
 	private double relativePos(Tank tank, int axis) {
+		/**
+		 * Computes relative position between self and tank.
+		 */
 
 		return tank.pos()[axis] - control.pos()[axis];
 	}
 
 	private void setTargetBullet() {
+		/**
+		 * Sets closest bullet as target for self to avoid
+		 */
 		Bullet old = targetBullet;
 		if(game.bullets().size() > 0) {
 			Bullet closestBullet = game.bullets().get(0);
@@ -127,6 +145,12 @@ public class TankAI {
 	
 	
 	private void setPriorities() {
+		/**
+		 * Sets self action priority as one of the following:
+		 * 		a. Avoid boundary
+		 * 		b. Avoid bullet
+		 * 		c. Adjust distance from enemy tank
+		 */
 		setBoundaryDistances();
 		if(targetBullet != null) {
 			priorities[0] = "bullet";
@@ -149,14 +173,15 @@ public class TankAI {
 	}
 	
 	private void setDPos(int axis) {
+		/**
+		 * Sets direction for self to move next frame
+		 */
 		if(dPosLock > 0) {
 			dPosLock--;
-			System.out.println(dPosLock);
 			return;
 		}
 		int other = 1;
 		if(axis == 1) other = 0;
-		System.out.println(control.pos()[axis]);
 		if(control.pos()[axis] < 50){
 			control.setD(axis, this.controlSpeed);
 			this.dPosLock = 5;
@@ -169,32 +194,12 @@ public class TankAI {
 		}
 		switch(priorities[axis]) {
 			case "bullet":
+				// Chooses vector orthogonal to bullet vector that points closer to the center of the field
 				ArrayList<double[]> vectors = orthagonalScaledVectors(targetBullet.dPos(), this.controlSpeed);
 				int vectorChoice;
-				/**if(Math.abs(boundaryDistances[0]) < 150 || Math.abs(boundaryDistances[1]) < 150){	//If close to boundary, choose based on moving away from boundary
-					this.dPosLock = 20;
-					
-					int distChoice;
-					if(Math.abs(boundaryDistances[0]) < Math.abs(boundaryDistances[1])) {		    //If close to left wall, choose vector that moves right
-						distChoice = 0;																//etc. for all walls
-					}
-					else distChoice = 1;
-					if(control.pos()[distChoice] < 150) {
-						if (vectors.get(0)[distChoice] > 0) {
-							vectorChoice = 0;
-						}
-						else vectorChoice = 1;
-					}
-					else {
-						if(vectors.get(0)[distChoice] < 0) {
-							vectorChoice = 0;
-						}
-						else vectorChoice = 1;
-					}
-					System.out.println("too close");
-						
-				}
-				else **/if(control.pos()[1] > (targetBullet.pos()[1] + targetBullet.dPos()[1]/targetBullet.dPos()[0] * (control.pos()[0] - targetBullet.pos()[0]))) {
+				
+				if(control.pos()[1] > (targetBullet.pos()[1] + targetBullet.dPos()[1]/targetBullet.dPos()[0] * (control.pos()[0] 
+						- targetBullet.pos()[0]))) {
 					vectorChoice = 0;
 				}
 				else {
@@ -204,6 +209,7 @@ public class TankAI {
 				control.setD(1, vectors.get(vectorChoice)[1]);
 				break;
 			case "tank":
+				// Maintains distance from closest enemy tank between 200 & 225 units
 				if(Math.abs(targetTankVector[axis])  < 200) {
 					tooClose(axis);
 					break;
@@ -215,18 +221,18 @@ public class TankAI {
 				//else closeEnough(axis);
 				break;
 			case "boundary":
+				// Stay far enough away from boundary
 				if(boundaryDistances[axis] < 0) {
 					control.setD(axis, 5);
 				}
 				else control.setD(axis, -5);
-				
-				//if(boundaryDistances[other] < 0)
-				//	control.setD(other, 5);
-				//else control.setD(other, -5);
+
 		}
 	}
 	private void tooClose(int axis) {
-	
+	/**
+	 * Move away from target tank
+	 */
 		if(targetTankVector[axis] > 0) {
 			control.setD(axis, -5);
 		}
@@ -235,6 +241,9 @@ public class TankAI {
 		return;
 	}
 	private void tooFar(int axis) {
+		/**
+		 * Move towards target tank
+		 */
 		if(targetTankVector[axis] > 0) {
 			control.setD(axis, 5);
 		}
@@ -248,6 +257,9 @@ public class TankAI {
 	}
 	
 	private void fireBullet() {
+		/**
+		 * Fire bullet such that it will intersect target tank's current trajectory
+		 */
 		double[] bulletVector = calculateBulletVector(control.pos(), targetTanks.get(0).pos(), targetTanks.get(0).dPos());
 		//System.out.println(bulletVector[0] + " " + bulletVector[1]);
 		double[] prevDPos = control.dPos().clone();
@@ -257,6 +269,9 @@ public class TankAI {
 
 	}
 	private double[] calculateBulletVector(int[] controlPos, int[] targetPos, double[] targetDPos) {
+		/**
+		 * Compute vector along which to fire bullet
+		 */
 		//See docs for math lol (TODO: write math docs)
 		int bulletSpeed = 15;
 		int[] targetControlVector = new int[] {(controlPos[0] - targetPos[0]), (controlPos[1] - targetPos[1])};
@@ -309,6 +324,9 @@ public class TankAI {
 	}
 	
 	private ArrayList<double[]> orthagonalScaledVectors(double[] vector, double fMag) {
+		/**
+		 * Compute vectors orthogonal to vector
+		 */
 		ArrayList<double[]> orthagonalVectors = new ArrayList<double[]>();
 		for(int i = 0; i < 2; i++) {
 			double[] orthagonal = new double[2];
@@ -319,19 +337,23 @@ public class TankAI {
 		return orthagonalVectors;
 	}
 	private double[] scaleVectorTo(double[] vector, double fMag) {
+		/**
+		 * Scales a vector by fMag.
+		 */
 		double iMag = Math.sqrt(Math.pow(vector[0], 2) + Math.pow(vector[1], 2));
 		return new double[] {vector[0] / iMag * fMag, vector[1] / iMag * fMag};
 	}
 	
 	private boolean vectorsIntersect(int[] p1, int[] d1, int[] p2, int[] d2) {
+		/**
+		 * Returns whether two vectors will intersect.
+		 */
 		if(d2[0] - d1[0] != 0) {
 			int time = (p1[0] - p2[0])/(d2[0] - d1[0]);
-			System.out.println(time * d2[1] + p2[1] - time * d1[1] + p1[1]);
 			return Math.abs(time * d2[1] + p2[1] - time * d1[1] + p1[1]) < 50;
 		}
 		else if(d2[1] - d1[1] != 0) {
 			int time = (p1[1] - p2[1])/(d2[1] - d1[1]);
-			System.out.println(time * d2[0] + p2[0] - time * d1[0] + p1[0]);
 			return Math.abs(time * d2[0] + p2[0] - time * d1[0] + p1[0]) < 50;
 		}
 		else return true;

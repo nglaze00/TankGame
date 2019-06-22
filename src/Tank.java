@@ -51,7 +51,14 @@ public class Tank implements Movable{
 		return color;
 	}
 	
+	public int owner() {
+		return owner;
+	}
+	
 	public boolean damage() {
+		/**
+		 * Removes one shield from self. Call when a bullet hits self.
+		 */
 		shields -= 1;
 		System.out.println("Tank damaged!");
 		if (shields < 0) {
@@ -75,6 +82,9 @@ public class Tank implements Movable{
 		pos[1] += dPos[1];
 	}
 	public void setLastPos() {
+		/**
+		 * Updates last position of tank
+		 */
 		if(dPos[0] != 0 || dPos[1] != 0) {
 			lastDPos[0] = dPos.clone()[0];
 			lastDPos[1] = dPos.clone()[1];
@@ -82,6 +92,9 @@ public class Tank implements Movable{
 	}
 
 	public Bullet fireBullet() {
+		/**
+		 * If reloaded, fire a bullet in the direction the tank is moving
+		 */
 		if(reloadLeft != 0) {
 			return null;
 			
@@ -91,6 +104,9 @@ public class Tank implements Movable{
 		
 	}
 	public Bullet fireBullet(double[] vector) {
+		/**
+		 * If reloaded, fire a bullet along a vector.
+		 */
 		if(reloadLeft != 0) {
 			return null;
 		}

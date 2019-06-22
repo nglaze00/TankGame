@@ -38,7 +38,7 @@ public class GameManager extends JFrame {
 		}
 		bot = new TankAI(tanks.get(tanks.size() - 1), this);
 		play();
-		System.out.println("Player " + tanks.get(0).color() + " wins!");
+		System.out.println("Player " + tanks.get(0).owner() + " wins!");
 	}
 	
 	public void play() {

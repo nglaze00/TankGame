@@ -38,6 +38,9 @@ public class Bullet implements Movable{
 	}
 	
 	public boolean isCloseTo(Tank tank) {
+		/**
+		 * Returns whether
+		 */
 		double t;
 		int tAxis = 1;
 		if(tank.dPos()[0] - this.dPos()[0] == 0) {
