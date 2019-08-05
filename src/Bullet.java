@@ -3,12 +3,12 @@ import java.awt.Graphics;
 
 public class Bullet implements Movable{
 	
-	private int[] pos;
+	private double[] pos;
 	private double[] dPos;
 	private int owner;
 	private int tSize;
 	
-	public Bullet(int[] pos, double[] dPos) {
+	public Bullet(double[] pos, double[] dPos) {
 		this.pos = pos;
 		this.dPos = dPos;
 		this.tSize = 10;
@@ -21,7 +21,7 @@ public class Bullet implements Movable{
 		return owner;
 	}
 
-	public int[] pos() {
+	public double[] pos() {
 		return pos;
 	}
 	public void moveX() {
@@ -39,7 +39,7 @@ public class Bullet implements Movable{
 	
 	public boolean isCloseTo(Tank tank) {
 		/**
-		 * Returns whether
+		 * Returns whether self is within three tank-width units of parameter tank.
 		 */
 		double t;
 		int tAxis = 1;

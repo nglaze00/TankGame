@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 
 public class Tank implements Movable{
 
-	private int[] pos;
+	private double[] pos;
 	private double[] dPos;
 	private double[] lastDPos;
 	private int tSize;
@@ -20,7 +20,7 @@ public class Tank implements Movable{
 	
 	private int owner;
 		
-	public Tank(int startShields, int[] startPos, int size, int reloadTime, Color color, int owner) {
+	public Tank(int startShields, double[] startPos, int size, int reloadTime, Color color, int owner) {
 		pos = startPos;
 		dPos = new double[] {0, 0};
 		lastDPos = new double[] {0, 0};
@@ -32,7 +32,7 @@ public class Tank implements Movable{
 		this.owner = owner;
 	}
 	
-	public int[] pos() {
+	public double[] pos() {
 		return pos;
 	}
 	public double[] dPos() {
@@ -100,7 +100,7 @@ public class Tank implements Movable{
 			
 		}
 		reloadLeft = reloadTime;
-		return new Bullet(new int[] {pos[0], pos[1]}, new double[] {lastDPos[0] * 3, lastDPos[1] * 3});
+		return new Bullet(new double[] {pos[0], pos[1]}, new double[] {lastDPos[0] * 3, lastDPos[1] * 3});
 		
 	}
 	public Bullet fireBullet(double[] vector) {
@@ -111,7 +111,7 @@ public class Tank implements Movable{
 			return null;
 		}
 		reloadLeft = reloadTime;
-		return new Bullet(new int[] {pos[0], pos[1]}, new double[] {vector[0], vector[1]});
+		return new Bullet(new double[] {pos[0], pos[1]}, new double[] {vector[0], vector[1]});
 	}
 
 	public void reload() {
